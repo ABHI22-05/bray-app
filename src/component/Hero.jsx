@@ -98,7 +98,10 @@ const Hero = () => {
     currentRoundScores.forEach((score, index) => {
       if (scores[index] >= 80) {
         const scoreNum = score === '' ? 0 : parseInt(score)
-        if (scoreNum < 0) hasNegative = true
+        // For players at/above 80, only check if positive score is 13 or ignore negative
+        if (scoreNum > 0 && scoreNum !== 13) {
+          hasNegative = true
+        }
       }
     })
 
