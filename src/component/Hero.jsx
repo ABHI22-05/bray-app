@@ -56,13 +56,10 @@ const Hero = () => {
     setPlayers(newPlayers)
   }
   const handleScoreSubmit = () => {
-    // Calculate total of positive scores only
+    // Calculate total of positive scores only, excluding -5
     const roundTotal = currentRoundScores.reduce((sum, score) => {
       let scoreNum = score === '' ? 0 : parseInt(score)
-      // If score is -5 and current total is less than 5, keep score at 0
-      if (scoreNum === -5 && sum < 5) {
-        scoreNum = 0
-      }
+      // Only add positive scores that are not -5
       return sum + (scoreNum > 0 ? scoreNum : 0)
     }, 0)
 
@@ -93,19 +90,18 @@ const Hero = () => {
       }
     }
 
-    // Validate that players with score >= 80 only have positive scores
-    let hasNegative = false
+    // Validate that players with score >= 80 only have scores of 13 or less
+    let hasInvalidScore = false
     currentRoundScores.forEach((score, index) => {
       if (scores[index] >= 80) {
         const scoreNum = score === '' ? 0 : parseInt(score)
-        // For players at/above 80, only check if positive score is 13 or ignore negative
-        if (scoreNum > 0 && scoreNum !== 13) {
-          hasNegative = true
+        if (scoreNum > 13) {
+          hasInvalidScore = true
         }
       }
     })
 
-    if (hasNegative) {
+    if (hasInvalidScore) {
       setShowScoreWarning(true)
       return
     }
@@ -233,16 +229,15 @@ const Hero = () => {
   }
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <h2 className="text-3xl font-bold mb-6 text-center text-blue-400">Game in Progress</h2>
+    <div className="p-4 max-w-6xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4 text-center text-blue-400">Game in Progress</h2>
       
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {players.map((player, index) => (
-          <div key={index} className="p-6 border-2 rounded-xl border-gray-600 bg-gray-800/50 backdrop-blur-sm shadow-xl">
-            <h3 className={`text-2xl font-bold mb-3 ${scores[index] >= 100 ? 'text-red-400' : 'text-blue-400'}`}>{player}</h3>
-            <p className="mb-4 text-2xl">Total Score: <span className='font-bold text-3xl'>{scores[index]}</span></p>
-            <div className="flex gap-3">
+          <div key={index} className="p-3 border-2 rounded-xl border-gray-600 bg-gray-800/50 backdrop-blur-sm shadow-xl">
+            <h3 className={`text-lg font-bold mb-1 ${scores[index] >= 100 ? 'text-red-400' : 'text-blue-400'}`}>{player}</h3>
+            <p className="mb-2 text-lg">Total Score: <span className={`font-bold text-xl ${scores[index] >= 80 ? 'text-yellow-400' : ''}`}>{scores[index]}</span></p>
+            <div className="flex gap-2">
               <input
                 type="number"
                 value={currentRoundScores[index]}
@@ -253,11 +248,11 @@ const Hero = () => {
                   setCurrentRoundScores(newScores)
                 }}
                 placeholder="Round score"
-                className="w-full p-3 border-2 rounded-lg bg-gray-700 border-gray-600 focus:border-blue-500 focus:outline-none transition duration-200"
+                className="w-full p-1.5 border-2 rounded-lg bg-gray-700 border-gray-600 focus:border-blue-500 focus:outline-none transition duration-200"
               />
               <button
                 onClick={() => handleMinusFive(index)}
-                className={`text-white px-6 py-3 rounded-lg font-bold shadow-lg transition duration-200 ${
+                className={`text-white px-3 py-1.5 rounded-lg font-bold shadow-lg transition duration-200 ${
                   currentRoundScores[index] !== '' || 
                   scores[index] < 5 ||
                   currentRoundScores.filter(score => score === '-5').length >= 3
@@ -274,49 +269,49 @@ const Hero = () => {
           </div>
         ))}
       </div>
-      <div className="mt-8 flex flex-wrap gap-4 justify-center">
+      <div className="mt-6 flex flex-wrap gap-2 justify-center">
         <button
           onClick={handleScoreSubmit}
-          className="bg-gradient-to-r from-green-500 to-green-700 text-white px-8 py-3 rounded-lg font-bold shadow-lg hover:from-green-600 hover:to-green-800 transition duration-200"
+          className="bg-gradient-to-r from-green-500 to-green-700 text-white px-4 py-2 rounded-lg font-bold shadow-lg hover:from-green-600 hover:to-green-800 transition duration-200 text-sm"
         >
           Add Round
         </button>
         <button
           onClick={handleUndo}
-          className="bg-gradient-to-r from-yellow-500 to-yellow-700 text-white px-8 py-3 rounded-lg font-bold shadow-lg hover:from-yellow-600 hover:to-yellow-800 transition duration-200 disabled:opacity-50"
+          className="bg-gradient-to-r from-yellow-500 to-yellow-700 text-white px-4 py-2 rounded-lg font-bold shadow-lg hover:from-yellow-600 hover:to-yellow-800 transition duration-200 disabled:opacity-50 text-sm"
           disabled={rounds.length === 0}
         >
           Undo Round
         </button>
         <button
           onClick={() => setShowRounds(!showRounds)}
-          className="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-8 py-3 rounded-lg font-bold shadow-lg hover:from-blue-600 hover:to-blue-800 transition duration-200"
+          className="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-4 py-2 rounded-lg font-bold shadow-lg hover:from-blue-600 hover:to-blue-800 transition duration-200 text-sm"
         >
           {showRounds ? 'Hide Rounds' : 'Show Rounds'}
         </button>
         <button
           onClick={handleRestart}
-          className="bg-gradient-to-r from-red-500 to-red-700 text-white px-8 py-3 rounded-lg font-bold shadow-lg hover:from-red-600 hover:to-red-800 transition duration-200"
+          className="bg-gradient-to-r from-red-500 to-red-700 text-white px-4 py-2 rounded-lg font-bold shadow-lg hover:from-red-600 hover:to-red-800 transition duration-200 text-sm"
         >
           Restart
         </button>
       </div>
       {showRounds && (
-        <div className="mt-8">
-          <h3 className="text-2xl font-bold mb-4 text-center text-blue-400">Round History</h3>
-          <div className="grid grid-cols-1 gap-4">
-            <div className="grid grid-cols-4 gap-4">
+        <div className="mt-6">
+          <h3 className="text-xl font-bold mb-3 text-center text-blue-400">Round History</h3>
+          <div className="grid grid-cols-1 gap-3">
+            <div className="grid grid-cols-4 gap-2">
               {players.map((player, index) => (
-                <div key={index} className={`font-bold text-center text-lg ${scores[index] >= 100 ? 'text-red-400' : 'text-blue-400'}`}>
+                <div key={index} className={`font-bold text-center text-base ${scores[index] >= 100 ? 'text-red-400' : 'text-blue-400'}`}>
                   {player}
                 </div>
               ))}
             </div>
             {rounds.map((round, roundIndex) => (
-              <div key={roundIndex} className="grid grid-cols-4 gap-4 p-4 border-2 rounded-xl border-gray-600 bg-gray-800/50 backdrop-blur-sm shadow-xl">
+              <div key={roundIndex} className="grid grid-cols-4 gap-2 p-2 border-2 rounded-xl border-gray-600 bg-gray-800/50 backdrop-blur-sm shadow-xl">
                 {round.map((score, playerIndex) => (
-                  <div key={playerIndex} className={`text-center text-lg ${scores[playerIndex] >= 100 ? 'text-red-400' : 'text-gray-300'}`}>
-                    Round {roundIndex + 1}: {score === '-5' ? '-5' : score || '0'}
+                  <div key={playerIndex} className={`text-center text-base ${scores[playerIndex] >= 100 ? 'text-red-400' : 'text-gray-300'}`}>
+                    R{roundIndex + 1}: {score === '-5' ? '-5' : score || '0'}
                   </div>
                 ))}
               </div>
@@ -326,9 +321,9 @@ const Hero = () => {
       )}
       {showScoreWarning && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center backdrop-blur-sm">
-          <div className="bg-gray-800 p-8 rounded-xl shadow-2xl text-center max-w-md w-full">
-            <h2 className="text-3xl font-bold mb-4 text-yellow-400">Warning!</h2>
-            <p className="text-xl mb-6 text-gray-300">
+          <div className="bg-gray-800 p-6 rounded-xl shadow-2xl text-center max-w-sm w-full mx-4">
+            <h2 className="text-2xl font-bold mb-3 text-yellow-400">Warning!</h2>
+            <p className="text-base mb-4 text-gray-300">
               {scores.some(score => score >= 80) 
                 ? "Total round score must be exactly 25 or 13. Players with score ≥80 can only have all positive or all negative scores."
                 : currentRoundScores.reduce((sum, score) => sum + (score === '' ? 0 : parseInt(score)), 0) === 25 && !currentRoundScores.some(score => (score === '' ? 0 : parseInt(score)) > 11)
@@ -337,7 +332,7 @@ const Hero = () => {
             </p>
             <button
               onClick={() => setShowScoreWarning(false)}
-              className="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-8 py-3 rounded-lg font-bold shadow-lg hover:from-blue-600 hover:to-blue-800 transition duration-200 z-50"
+              className="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-2 rounded-lg font-bold shadow-lg hover:from-blue-600 hover:to-blue-800 transition duration-200 z-50 text-sm"
             >
               OK
             </button>
@@ -346,19 +341,19 @@ const Hero = () => {
       )}
       {showGameOverModal && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center backdrop-blur-sm">
-          <div className="bg-gray-800 p-8 rounded-xl shadow-2xl text-center max-w-md w-full">
-            <h2 className="text-3xl font-bold mb-4 text-red-400">Game Over!</h2>
-            <p className="text-xl mb-6 text-gray-300">Loosers: {loosers.join(', ')}</p>
-            <div className="flex gap-4 justify-center">
+          <div className="bg-gray-800 p-6 rounded-xl shadow-2xl text-center max-w-sm w-full mx-4">
+            <h2 className="text-2xl font-bold mb-3 text-red-400">Game Over!</h2>
+            <p className="text-lg mb-4 text-gray-300">Loosers: {loosers.join(', ')}</p>
+            <div className="flex gap-3 justify-center">
               <button
                 onClick={() => setShowGameOverModal(false)}
-                className="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-8 py-3 rounded-lg font-bold shadow-lg hover:from-blue-600 hover:to-blue-800 transition duration-200"
+                className="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-2 rounded-lg font-bold shadow-lg hover:from-blue-600 hover:to-blue-800 transition duration-200 text-sm"
               >
                 OK
               </button>
               <button
                 onClick={handleRestart}
-                className="bg-gradient-to-r from-green-500 to-green-700 text-white px-8 py-3 rounded-lg font-bold shadow-lg hover:from-green-600 hover:to-green-800 transition duration-200"
+                className="bg-gradient-to-r from-green-500 to-green-700 text-white px-6 py-2 rounded-lg font-bold shadow-lg hover:from-green-600 hover:to-green-800 transition duration-200 text-sm"
               >
                 Restart Game
               </button>
