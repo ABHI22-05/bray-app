@@ -392,7 +392,7 @@ const Hero = () => {
         {players.map((player, index) => (
           <div key={index} className="p-3 border-2 rounded-xl border-gray-600 bg-gray-800/50 backdrop-blur-sm shadow-xl">
             <h3 className={`text-lg font-bold mb-1 ${scores[index] >= 100 ? 'text-red-400' : 'text-blue-400'}`}>{player}</h3>
-            <p className="mb-2 text-lg">Total Score: <span className={`font-bold text-xl ${scores[index] >= 80 ? 'text-yellow-400' : ''}`}>{scores[index]}</span></p>
+            <p className="mb-2 text-lg">Total Score: <span className={`font-bold text-xl ${scores[index] >= 80 ? 'text-red-400' : scores[index] >= 70 ? 'text-yellow-400' : ''}`}>{scores[index]}</span></p>
             <div className="flex gap-2">
               <input
                 type="number"
@@ -434,25 +434,29 @@ const Hero = () => {
         ))}
       </div>
       <div className="mt-6 flex flex-wrap gap-2 justify-center">
-        <button
-          onClick={handleScoreSubmit}
-          className="bg-gradient-to-r from-green-500 to-green-700 text-white px-4 py-2 rounded-lg font-bold shadow-lg hover:from-green-600 hover:to-green-800 transition duration-200 text-sm"
-        >
-          Add Round
-        </button>
-        <button
-          onClick={handleUndo}
-          className="bg-gradient-to-r from-yellow-500 to-yellow-700 text-white px-4 py-2 rounded-lg font-bold shadow-lg hover:from-yellow-600 hover:to-yellow-800 transition duration-200 disabled:opacity-50 text-sm"
-          disabled={rounds.length === 0}
-        >
-          Undo Round
-        </button>
-        <button
-          onClick={() => setShowRounds(!showRounds)}
-          className="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-4 py-2 rounded-lg font-bold shadow-lg hover:from-blue-600 hover:to-blue-800 transition duration-200 text-sm"
-        >
-          {showRounds ? 'Hide Rounds' : 'Show Rounds'}
-        </button>
+        {!gameOver ? (
+          <>
+            <button
+              onClick={handleScoreSubmit}
+              className="bg-gradient-to-r from-green-500 to-green-700 text-white px-4 py-2 rounded-lg font-bold shadow-lg hover:from-green-600 hover:to-green-800 transition duration-200 text-sm"
+            >
+              Add Round
+            </button>
+            <button
+              onClick={handleUndo}
+              className="bg-gradient-to-r from-yellow-500 to-yellow-700 text-white px-4 py-2 rounded-lg font-bold shadow-lg hover:from-yellow-600 hover:to-yellow-800 transition duration-200 disabled:opacity-50 text-sm"
+              disabled={rounds.length === 0}
+            >
+              Undo Round
+            </button>
+            <button
+              onClick={() => setShowRounds(!showRounds)}
+              className="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-4 py-2 rounded-lg font-bold shadow-lg hover:from-blue-600 hover:to-blue-800 transition duration-200 text-sm"
+            >
+              {showRounds ? 'Hide Rounds' : 'Show Rounds'}
+            </button>
+          </>
+        ) : null}
         <button
           onClick={handleRestart}
           className="bg-gradient-to-r from-red-500 to-red-700 text-white px-4 py-2 rounded-lg font-bold shadow-lg hover:from-red-600 hover:to-red-800 transition duration-200 text-sm"
